@@ -1,11 +1,11 @@
-name: Deploy Assets to WordPress.org
+name: Deploy to WordPress.org
 on:
   release:
     types: [published]
 
 jobs:
   asset:
-    name: Update Asset to WordPress.org
+    name: Update Asset on WordPress.org
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -75,7 +75,6 @@ jobs:
 
       - name: Deploy WordPress plugin
         uses: 10up/action-wordpress-plugin-deploy@stable
-        continue-on-error: true
         with:
           generate-zip: true
         env:
