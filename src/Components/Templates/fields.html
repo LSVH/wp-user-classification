@@ -1,0 +1,62 @@
+{% macro field(args) %}
+    {{
+        args.options is defined ? (
+            args.multiple
+                ? _self.checkboxes(args)
+                : _self.select(args)
+            ) : _self.input(args)
+    }}
+{% endmacro %}
+
+{% macro input(args) %}
+    <input
+        type="{{ args.type|e }}"
+        id="{{ args.id|e }}"
+        name="{{ args.name|e }}"
+        value="{{ args.value|e }}"
+        placeholder="{{ args.placeholder|e }}"
+        {{ args.disabled ? ' disabled' : null }}
+    />
+{% endmacro %}
+
+{% macro select(args) %}
+    {% if args.options|length > 0 %}
+        <select name="{{ args.name|e }}" id="{{ args.id|e }}"{{ args.disabled ? ' disabled' : null }}>
+            <option disabled{{ args.value is empty ? ' selected' : null }}>-</option>
+            {% for option in args.options %}
+                <option value="{{ option.value|e }}"{{ args.value|e == option.value|e ? ' selected' : null }}>{{ option.label|e }}</option>
+            {% endfor %}
+        </select>
+    {% else %}
+        <em>No options available.</em>
+    {% endif %}
+{% endmacro %}
+
+{% macro checkboxes(args) %}
+    {% if args.options|length > 0 %}
+        <fieldset>
+            <legend class="screen-reader-text">
+                {{ field.label|e }}
+            </legend>
+            {% for option in args.options %}
+                {% set id = (args.id ~ '_' ~ option.value|u.snake)|e %}
+                <label for="{{ id }}">
+                    <input
+                        type="checkbox"
+                        id="{{ id }}"
+                        name="{{ args.name|e ~ '[]' }}"
+                        value="{{ option.value|e }}"
+                        {{ args.disabled ? ' disabled' : null }}
+                        {{ option.value in args.value ? ' checked' : null }}
+                    />
+                    {{ option.label|e }}
+                </label>
+                {% if args.options|last.value != option.value %}
+                <br />
+                {% endif %}
+            {% endfor %}
+        </fieldset>
+    {% else %}
+        <em>No options available.</em>
+    {% endif %}
+{% endmacro %}

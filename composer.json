@@ -1,0 +1,21 @@
+{
+    "name": "lsvh/wp-user-classification",
+    "description": "Classify an WordPress user.",
+    "type": "project",
+    "license": "GPLv2 or later",
+    "authors": [
+        {
+            "name": "Luuk S. van Houdt",
+            "email": "info@lsvh.org"
+        }
+    ],
+    "require": {
+        "twig/twig": "^3.3.0",
+        "twig/string-extra": "^3.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "LSVH\\WordPress\\Plugin\\UserClassification\\": "src/"
+        }
+    }
+}

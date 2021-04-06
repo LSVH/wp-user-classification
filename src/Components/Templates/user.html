@@ -1,0 +1,23 @@
+{% from "fields.html" import field as f %}
+<div class="user-classification">
+    <h2>{{ title }}</h2>
+    <p>{{ 'Manage what classifiers are active at'|__ }} <a href="options-general.php?page={{ domain }}">{{ 'the settings page'|__ }}</a>.</p>
+    <table class="form-table" role="presentation">
+        {% for field in fields %}
+            {% if field.name in options.classifiers %}
+                {% set field = field|merge({
+                    'id': domain ~ '_' ~ (field.id ?? field.name),
+                    'value': attribute(meta, field.name),
+                    'name': domain ~ '[' ~ field.name ~ ']',
+                    'disabled': disabled,
+                }) %}
+                <tr>
+                    <th>
+                        <label for="{{ field.id }}">{{ field.label }}</label>
+                    </th>
+                    <td>{{ f(field) }}</td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+    </table>
+</div>
