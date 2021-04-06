@@ -36,6 +36,8 @@ jobs:
           README_NAME: readme.md
   plugin:
     name: Deploy Plugin to WordPress.org
+    runs-on: ubuntu-latest
+    steps:
       - uses: actions/checkout@v2
 
       - name: Cache NPM dependencies
