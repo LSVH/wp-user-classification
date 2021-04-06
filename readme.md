@@ -1,4 +1,4 @@
-=== Social Media Scraper ===
+# User Classification
 Contributors: lsvh
 Donate link: https://github.com/LSVH/wp-user-classification
 Tags: users, administration
@@ -11,9 +11,13 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Classify an WordPress user.
 
-== Description ==
+[![](https://img.shields.io/wordpress/plugin/installs/user-switching?style=for-the-badge)](https://wordpress.org/plugins/user-classification/)
+
+## Description
 
 This plugin helps you classify your [WordPress users](https://learn.wordpress.org/lesson-plan/user-management/).
+
+### Features
 
 The plugin currently supports the following classifiers:
 
@@ -21,7 +25,7 @@ The plugin currently supports the following classifiers:
 
 The plugin comes with a settings page where you can specify which classifiers you want to enable.
 
-== Capabilities ==
+### Capabilities
 
 As an WordPress Admin its understandable that not all users can read and/or edit their own or someone else their user classification. That's why this plugin comes with the following capabilities:
 
@@ -30,7 +34,7 @@ As an WordPress Admin its understandable that not all users can read and/or edit
 * `edit_user-classification` : The user will be allowed to read and edit all user classifications.
 * `edit_own_user-classification` : The user will be allowed to read and edit their own user classifications.
 
-== Installation ==
+### Usage
 
 This section describes how to install the plugin and get it working.
 
@@ -42,23 +46,25 @@ This section describes how to install the plugin and get it working.
 
 Note: when using the classifier "Categories", make sure you defined categories in "Users > User Categories".
 
-== Frequently Asked Questions ==
+## Screenshots
 
-= Where can I classify an user? =
+1. The User Classification section on the user page.<br>![The User Classification section on the user page](.wordpress-org/screenshot-1.png)
+2. The User Category displayed on the users page.<br>![The User Category displayed on the users page](.wordpress-org/screenshot-2.png)
+3. The User Categories taxonomy.<br>![The User Categories taxonomy](.wordpress-org/screenshot-3.png)
+4. The plugin's settings page.<br>![The plugin's settings page](.wordpress-org/screenshot-4.png)
+
+## Frequently Asked Questions
+
+### Where can I classify an user?
 
 At the user edit page. But make sure you have the right capabilities to do so and that there are classifiers active.
 
-= Why I cannot edit the user's/my classifiers? =
+### Why I cannot edit the user's/my classifiers?
 
 Your user might not have the right capabilities to edit the classifiers.
 
-== Screenshots ==
-
-1. The User Classification section on the user page.
-2. The User Category displayed on the users page.
-3. The User Categories taxonomy.
-4. The plugin's settings page.
-
-== Issues & Contributions ==
+## Issues & Contributions
 
 Please submit issues or your contributions for this plugin on the [Github Repository](https://github.com/LSVH/wp-user-classification).
+
+<!-- changelog -->

@@ -1,0 +1,16 @@
+# Directories
+.git
+.github
+.wordpress-org
+node_modules
+vendor
+
+.editorconfig
+.distignore
+.gitignore
+docker-compose.yml
+nginx_default.conf
+composer.json
+composer.lock
+package-lock.json
+package.json

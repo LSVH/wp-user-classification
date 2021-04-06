@@ -1,0 +1,92 @@
+name: Deploy Assets to WordPress.org
+on:
+  release:
+    types: [published]
+
+jobs:
+  asset:
+    name: Update Asset to WordPress.org
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache NPM dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install NPM dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Populate changelog
+        run: node .github/workflows/changelog.js readme.md
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # The custom part of this job
+      - name: Update asset
+        uses: 10up/action-wordpress-plugin-asset-update@1.4.1
+        env:
+          SLUG: ${{ secrets.WPORG_SLUG }}
+          SVN_USERNAME: ${{ secrets.WPORG_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.WPORG_PASSWORD }}
+          README_NAME: readme.md
+  plugin:
+    name: Deploy Plugin to WordPress.org
+      - uses: actions/checkout@v2
+
+      - name: Cache NPM dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install NPM dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Populate changelog
+        run: node .github/workflows/changelog.js readme.md
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # The custom part of this job
+      - name: Get Composer cache directory
+        id: composer-cache
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Install Composer dependencies
+        uses: php-actions/composer@v5
+
+      - name: Deploy WordPress plugin
+        uses: 10up/action-wordpress-plugin-deploy@stable
+        continue-on-error: true
+        with:
+          generate-zip: true
+        env:
+          SLUG: ${{ secrets.WPORG_SLUG }}
+          SVN_USERNAME: ${{ secrets.WPORG_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.WPORG_PASSWORD }}
+    - name: Upload release asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ${{github.workspace}}/${{ github.event.repository.name }}.zip
+        asset_name: ${{ github.event.repository.name }}.zip
+        asset_content_type: application/zip
+
