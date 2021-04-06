@@ -1,12 +1,13 @@
 # User Classification
-Contributors: lsvh
-Donate link: https://github.com/LSVH/wp-user-classification
-Tags: users, administration
-Requires at least: 5.0
-Requires PHP: 7.0
-Tested up to: 5.7
-Stable tag: trunk
-License: GPLv2 or later
+
+Contributors: lsvh  
+Donate link: https://github.com/LSVH/wp-user-classification  
+Tags: users, administration  
+Requires at least: 5.0  
+Requires PHP: 7.0  
+Tested up to: 5.7  
+Stable tag: trunk  
+License: GPLv2 or later  
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Classify an WordPress user.
@@ -48,10 +49,14 @@ Note: when using the classifier "Categories", make sure you defined categories i
 
 ## Screenshots
 
-1. The User Classification section on the user page.<br>![The User Classification section on the user page](.wordpress-org/screenshot-1.png)
-2. The User Category displayed on the users page.<br>![The User Category displayed on the users page](.wordpress-org/screenshot-2.png)
-3. The User Categories taxonomy.<br>![The User Categories taxonomy](.wordpress-org/screenshot-3.png)
-4. The plugin's settings page.<br>![The plugin's settings page](.wordpress-org/screenshot-4.png)
+1. The User Classification section on the user page.  
+   ![The User Classification section on the user page](.wordpress-org/screenshot-1.png)
+2. The User Category displayed on the users page.  
+   ![The User Category displayed on the users page](.wordpress-org/screenshot-2.png)
+4. The User Categories taxonomy.  
+   ![The User Categories taxonomy](.wordpress-org/screenshot-3.png)
+6. The plugin's settings page.  
+   ![The plugin's settings page](.wordpress-org/screenshot-4.png)
 
 ## Frequently Asked Questions
 
