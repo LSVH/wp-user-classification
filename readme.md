@@ -11,7 +11,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Classify an WordPress user.
 
-[![](https://img.shields.io/wordpress/plugin/installs/user-switching?style=for-the-badge)](https://wordpress.org/plugins/user-classification/)
+[![](https://img.shields.io/wordpress/plugin/installs/user-classification?style=for-the-badge)](https://wordpress.org/plugins/user-classification/)
 
 ## Description
 
