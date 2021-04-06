@@ -1,6 +1,5 @@
 {
     "name": "wp-user-classification",
-    "version": "1.0.0",
     "description": "Classify an WordPress user",
     "license": "GPL-2.0-or-later",
     "author": "Luuk S. van Houdt",
