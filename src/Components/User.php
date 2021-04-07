@@ -16,7 +16,6 @@ class User extends BaseComponent
     {
         $meta = $this->getUserMeta($user->ID);
         $domain = $this->plugin->getDomain();
-        $categories = $this->getCategories();
         $can_read = $this->canEdit($user->ID);
         $can_edit = $this->canEdit($user->ID);
 
@@ -30,23 +29,45 @@ class User extends BaseComponent
             'disabled' => !$can_edit,
             'options' => $this->plugin->getOptions(),
             'title' => __('User Classification', $domain),
-            'fields' => [
-                [
-                    'name' => 'category',
-                    'label' => __('Category', $domain),
-                    'options' => $categories,
-                ],
-            ],
+            'fields' => $this->getFields(),
         ]);
     }
 
     public function save($user_id)
     {
         $domain = $this->plugin->getDomain();
-        $fields = $_POST[$domain];
+        $values = $_POST[$domain];
         if ($this->canEdit($user_id) && is_array($fields) && !empty($fields)) {
-            foreach ($fields as $key => $value) {
-                update_user_meta($user_id, $domain . '_' . $key, $value);
+            $fields = $this->getFields();
+            $namesOfFields = array_filter(array_map(function ($field) {
+                return array_key_exists('name', $field) ? $field['name'] : null;
+            }, $fields));
+            $namesOfFieldsWithOptions = array_filter(array_map(function ($field) {
+                return array_key_exists('options', $field)
+                    && array_key_exists('name', $field)
+                    ? $field['name'] : null;
+            }, $fields));
+
+            foreach ($values as $key => $value) {
+                $key = sanitize_text_field($domain . '_' . $key);
+                $value = sanitize_text_field($value);
+
+                if (!in_array($key, $namesOfFields)) {
+                    break;
+                }
+
+                if (in_array($key, $namesOfFieldsWithOptions)) {
+                    $options = is_array($fields[$key]['options']) ? $fields[$key]['options'] : [];
+                    $valuesOfOptions = array_filter(array_map(function ($option) {
+                        return array_key_exists('value', $option) ? $option['value'] : null;
+                    }, $options));
+
+                    if (!in_array($value, $valuesOfOptions)) {
+                        break;
+                    }
+                }
+
+                update_user_meta($user_id, $key, $value);
             }
         }
     }
@@ -66,6 +87,20 @@ class User extends BaseComponent
         }
 
         return $meta;
+    }
+
+    private function getFields()
+    {
+        $domain = $this->plugin->getDomain();
+        $categories = $this->getCategories();
+
+        return [
+            [
+                'name' => 'category',
+                'label' => __('Category', $domain),
+                'options' => $categories,
+            ],
+        ];
     }
 
     private function getCategories()
