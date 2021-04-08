@@ -4,7 +4,7 @@
  * Plugin Name: User Classification
  * Plugin URI: https://github.com/LSVH/wp-user-classification
  * Description: Classify an WordPress user.
- * Version: 0.1.0
+ * Version: 0.1.1
  * Requires at least: 5.0
  * Requires PHP: 7.0
  * Author: LSVH
