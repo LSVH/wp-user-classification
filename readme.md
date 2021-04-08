@@ -4,7 +4,7 @@ Contributors: lsvh
 Donate link: https://github.com/LSVH/wp-user-classification  
 Tags: users, administration  
 Requires at least: 5.0  
-Requires PHP: 7.0  
+Requires PHP: 7.2.5  
 Tested up to: 5.7  
 Stable tag: 0.1.1  
 License: GPLv2 or later  
