@@ -39,7 +39,13 @@ class Settings extends BaseComponent
             'fields' => [
                 [
                     'name' => 'classifiers',
-                    'label' => __('Toggle classifiers', $domain),
+                    'label' => __('Enable classification by', $domain),
+                    'multiple' => true,
+                    'options' => $classifiers,
+                ],
+                [
+                    'name' => 'multiple',
+                    'label' => __('Enable multi-select for', $domain),
                     'multiple' => true,
                     'options' => $classifiers,
                 ],

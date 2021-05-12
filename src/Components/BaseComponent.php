@@ -18,7 +18,7 @@ abstract class BaseComponent implements Component
         $this->plugin = $plugin;
 
         $loader = new FilesystemLoader(__DIR__ . '/Templates/');
-        $this->templateEngine = new Environment($loader, ['debug' => true]);
+        $this->templateEngine = new Environment($loader, []);
         $this->templateEngine->addExtension(new StringExtension());
         $this->templateEngine->addFilter(new TwigFilter('__', function ($value) {
             return __($value, $this->plugin->getDomain());

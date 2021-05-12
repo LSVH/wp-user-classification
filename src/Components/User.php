@@ -36,33 +36,36 @@ class User extends BaseComponent
     public function save($user_id)
     {
         $domain = $this->plugin->getDomain();
-        $values = $_POST[$domain];
-        if ($this->canEdit($user_id) && is_array($fields) && !empty($fields)) {
+        $values = array_key_exists($domain, $_POST) ? $_POST[$domain] : [];
+        if ($this->canEdit($user_id) && is_array($values)) {
             $fields = $this->getFields();
-            $namesOfFields = array_filter(array_map(function ($field) {
-                return array_key_exists('name', $field) ? $field['name'] : null;
-            }, $fields));
             $namesOfFieldsWithOptions = array_filter(array_map(function ($field) {
                 return array_key_exists('options', $field)
-                    && array_key_exists('name', $field)
-                    ? $field['name'] : null;
+                && array_key_exists('name', $field)
+                ? $field['name'] : null;
             }, $fields));
 
-            foreach ($values as $key => $value) {
-                $key = sanitize_text_field($domain . '_' . $key);
-                $value = sanitize_text_field($value);
+            foreach ($fields as $field) {
+                $name = array_key_exists('name', $field) ? $field['name'] : null;
+                $value = array_key_exists($name, $values) ? $values[$name] : null;
+                $value = is_array($value) ? array_map('sanitize_text_field', $value) : sanitize_text_field($value);
+                $key = !empty($name) ? $domain . '_' . $name : null;
 
-                if (!in_array($key, $namesOfFields)) {
-                    break;
-                }
+                if (!empty($value) && in_array($name, $namesOfFieldsWithOptions)) {
+                    $options = array_key_exists('options', $field) && is_array($field['options'])
+                    ? $field['options'] : [];
 
-                if (in_array($key, $namesOfFieldsWithOptions)) {
-                    $options = is_array($fields[$key]['options']) ? $fields[$key]['options'] : [];
                     $valuesOfOptions = array_filter(array_map(function ($option) {
                         return array_key_exists('value', $option) ? $option['value'] : null;
                     }, $options));
 
-                    if (!in_array($value, $valuesOfOptions)) {
+                    if (is_array($value) && empty(array_filter($value, function ($option) use ($valuesOfOptions) {
+                        return in_array($option, $valuesOfOptions);
+                    }))) {
+                        break;
+                    }
+
+                    if (!is_array($value) && !in_array($value, $valuesOfOptions)) {
                         break;
                     }
                 }
@@ -94,13 +97,23 @@ class User extends BaseComponent
         $domain = $this->plugin->getDomain();
         $categories = $this->getCategories();
 
-        return [
+        $fields = [
             [
                 'name' => 'category',
                 'label' => __('Category', $domain),
                 'options' => $categories,
             ],
         ];
+
+        return array_map(function ($field) {
+            $name = array_key_exists('name', $field) ? $field['name'] : null;
+
+            if ($this->canMultiSelect($name)) {
+                $field['multiple'] = true;
+            }
+
+            return $field;
+        }, $fields);
     }
 
     private function getCategories()
@@ -111,6 +124,13 @@ class User extends BaseComponent
                 'value' => $term->term_id,
             ];
         }, UserCategory::getItems());
+    }
+
+    private function canMultiSelect($name)
+    {
+        $options = $this->plugin->getOptions();
+        $fieldsWithMultiSelect = array_key_exists('multiple', $options) ? $options['multiple'] : [];
+        return in_array($name, $fieldsWithMultiSelect);
     }
 
     private function canEdit($user_id)
