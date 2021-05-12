@@ -14,6 +14,7 @@ class UserCategory extends BaseComponent
         add_action('admin_head-term.php', [$this, 'fixCurrentMenuSelector']);
         add_filter('manage_users_columns', [$this, 'registerUserTableHeading']);
         add_filter('manage_users_custom_column', [$this, 'registerUserTableColumn'], 10, 3);
+        add_action('pre_get_users', [$this, 'registerUserQueryFilter']);
     }
 
     public function registerTaxonomy()
@@ -56,7 +57,8 @@ class UserCategory extends BaseComponent
         EOD;
     }
 
-    public function registerUserTableHeading($column) {
+    public function registerUserTableHeading($column)
+    {
         $insert = [self::TAXONOMY => $this->getSingular()];
         $pos = array_search('posts', array_keys($column));
         if ($pos !== false) {
@@ -71,15 +73,47 @@ class UserCategory extends BaseComponent
         return $column;
     }
 
-    public function registerUserTableColumn($val, $column_name, $user_id) {
+    public function registerUserTableColumn($val, $column_name, $user_id)
+    {
         if ($column_name === self::TAXONOMY) {
             $meta = get_user_meta($user_id, $this->plugin->getDomain() . '_category', true);
+
+            if (is_array($meta)) {
+                return implode(', ', array_filter(array_map(function ($args) {
+                    $term = get_term(intval($args));
+
+                    return property_exists($term, 'name') ? $this->getFilterTermLink($term) : false;
+                }, $meta)));
+            }
+
             $term = get_term(intval($meta));
 
-            return $term ? $term->name : '-';
+            return property_exists($term, 'name') ? $this->getFilterTermLink($term) : '-';
         }
 
         return $val;
+    }
+
+    public function registerUserQueryFilter($query)
+    {
+        global $pagenow;
+        if (is_admin() && 'users.php' == $pagenow) {
+            $key = $this->plugin->getDomain() . '_' . 'category';
+            $values = is_array($_GET) && array_key_exists($key, $_GET)
+            ? array_map('intval', explode(' ', sanitize_text_field($_GET[$key]))) : [];
+            if (!empty($values)) {
+                $queries = array_map(function ($value) use ($key) {
+                    return [
+                        'key' => $key,
+                        'value' => $value,
+                        'compare' => 'LIKE',
+                    ];
+                }, $values);
+                $queries['relation'] = 'OR';
+                $query->set('meta_key', $key);
+                $query->set('meta_query', $queries);
+            }
+        }
     }
 
     public function getSingular()
@@ -103,5 +137,33 @@ class UserCategory extends BaseComponent
             'hide_empty' => false,
         ]);
         return is_array($terms) ? $terms : [];
+    }
+
+    private function getFilterTermLink($term)
+    {
+        $filter = $_GET;
+        $key = $this->plugin->getDomain() . '_' . 'category';
+        $value = is_array($_GET) && array_key_exists($key, $filter)
+        ? array_map('intval', explode(' ', sanitize_text_field($filter[$key]))) : [];
+
+        $id = $term->term_id;
+        $active = in_array($id, $value);
+        if ($active) {
+            $value = array_diff($value, [$id]);
+        } else {
+            $value[] = $id;
+        }
+
+        $filter[$key] = implode('+', $value);
+        $filter = array_filter($filter);
+        $filter = implode('&', array_map(function ($k, $v) {
+            return "$k=$v";
+        }, array_keys($filter), $filter));
+
+        $filter = empty($filter) ? '' : '?' . $filter;
+
+        $label = $active ? "<strong>$term->name</strong>" : $term->name;
+
+        return '<a href="users.php' . $filter . '">' . $label . '</a>';
     }
 }

@@ -2,6 +2,8 @@
 
 namespace LSVH\WordPress\Plugin\UserClassification\Components;
 
+use LSVH\WordPress\Plugin\UserClassification\Pages\SettingsPage;
+
 class Settings extends BaseComponent
 {
     public function load()
@@ -27,41 +29,36 @@ class Settings extends BaseComponent
 
     public function renderSettings()
     {
-        $domain = $this->plugin->getDomain();
-        $classifiers = $this->getClassifiers();
+        $page = new SettingsPage($this->plugin);
 
-        print $this->renderTemplate('settings.html', [
-            'domain' => $domain,
-            'options' => $this->plugin->getOptions(),
+        print $page->render($this->getFields(), [
             'title' => $this->plugin->getName(),
-            'nonce' => $this->getFormNonce(),
-            'submit' => get_submit_button(),
-            'fields' => [
-                [
-                    'name' => 'classifiers',
-                    'label' => __('Enable classification by', $domain),
-                    'multiple' => true,
-                    'options' => $classifiers,
-                ],
-                [
-                    'name' => 'multiple',
-                    'label' => __('Enable multi-select for', $domain),
-                    'multiple' => true,
-                    'options' => $classifiers,
-                ],
-            ],
         ]);
     }
 
-    public function getFormNonce()
+    private function getFields()
     {
         $domain = $this->plugin->getDomain();
-        ob_start();
-        settings_fields($domain);
-        return ob_get_clean();
+        $classifiers = $this->getClassifiers();
+
+        return [
+            [
+                'name' => 'classifiers',
+                'label' => __('Enable classification by', $domain),
+                'multiple' => true,
+                'options' => $classifiers,
+            ],
+            [
+                'name' => 'multiple',
+                'label' => __('Enable multi-select for', $domain),
+                'multiple' => true,
+                'options' => $classifiers,
+            ],
+        ];
     }
 
-    public function getClassifiers() {
+    private function getClassifiers()
+    {
         $domain = $this->plugin->getDomain();
 
         return [

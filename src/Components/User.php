@@ -2,6 +2,8 @@
 
 namespace LSVH\WordPress\Plugin\UserClassification\Components;
 
+use LSVH\WordPress\Plugin\UserClassification\Pages\UserPage;
+
 class User extends BaseComponent
 {
     public function load()
@@ -14,8 +16,6 @@ class User extends BaseComponent
 
     public function render($user)
     {
-        $meta = $this->getUserMeta($user->ID);
-        $domain = $this->plugin->getDomain();
         $can_read = $this->canEdit($user->ID);
         $can_edit = $this->canEdit($user->ID);
 
@@ -23,13 +23,19 @@ class User extends BaseComponent
             return;
         }
 
-        print $this->renderTemplate('user.html', [
+        $domain = $this->plugin->getDomain();
+        $meta = $this->getUserMeta($user->ID);
+        $page = new UserPage($this->plugin);
+        $title = __('User Classification', $domain);
+        $subtitleLinkText = __('the settings page', $domain);
+        $subtitleLink = '<a href="options-general.php?page=user-classification">' . $subtitleLinkText . '</a>';
+        $subtitle = __('Manage what classifiers are active at', $domain) . ' ' . $subtitleLink . '.';
+
+        print $page->render($this->getFields(), [
             'meta' => $meta,
-            'domain' => $domain,
             'disabled' => !$can_edit,
-            'options' => $this->plugin->getOptions(),
-            'title' => __('User Classification', $domain),
-            'fields' => $this->getFields(),
+            'title' => $title,
+            'subtitle' => $subtitle,
         ]);
     }
 
@@ -86,7 +92,9 @@ class User extends BaseComponent
 
         foreach ($meta as $key => $value) {
             unset($meta[$key]);
-            $meta[substr($key, strlen($domain) + 1)] = is_array($value) ? $value[0] : $value;
+            $name = substr($key, strlen($domain) + 1);
+            $value = is_array($value) ? $value[0] : $value;
+            $meta[$name] = maybe_unserialize($value);
         }
 
         return $meta;
