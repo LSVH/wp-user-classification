@@ -16,5 +16,5 @@ runs:
           readme.md
           index.php
         placeholders: |
-          %%VERSION%%=${{steps.generate.outputs.latest}}
-          %%CHANGELOG%%=${{steps.generate.outputs.changelog}}
+          %%VERSION%%=${{ steps.generate.outputs.latest }}
+          %%CHANGELOG%%=${{ steps.generate.outputs.changelog }}
