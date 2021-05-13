@@ -7,7 +7,6 @@ jobs:
   asset:
     name: Update Asset on WordPress.org
     runs-on: ubuntu-latest
-    needs: prepare
     steps:
       - name: Prepare for deployment
         uses: ./.github/actions/prepare-deploy
@@ -22,7 +21,6 @@ jobs:
   plugin:
     name: Deploy Plugin to WordPress.org
     runs-on: ubuntu-latest
-    needs: prepare
     steps:
       - name: Prepare for deployment
         uses: ./.github/actions/prepare-deploy
