@@ -1,8 +1,6 @@
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@v2
-
     - id: generate
       name: Generate markdown changelog
       uses: LSVH/gha-releases-to-changelog@v1
