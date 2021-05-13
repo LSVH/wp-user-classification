@@ -4,10 +4,12 @@
 .wordpress-org
 node_modules
 
+# Files
 .editorconfig
 .distignore
 .gitignore
 docker-compose.yml
+docker_tag
 nginx_default.conf
 composer.json
 composer.lock

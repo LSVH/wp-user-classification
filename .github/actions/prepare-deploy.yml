@@ -1,0 +1,20 @@
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v2
+
+    - id: generate
+      name: Generate markdown changelog
+      uses: LSVH/gha-releases-to-changelog@v1
+      with:
+        title-template: '### %%TITLE%%'
+
+    - name: Replace placeholders
+      uses: LSVH/gha-replace-placeholders@v1
+      with:
+        include: |
+          readme.md
+          index.php
+        placeholders: |
+          %%VERSION%%=${{steps.generate.outputs.latest}}
+          %%CHANGELOG%%=${{steps.generate.outputs.changelog}}

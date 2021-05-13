@@ -3,10 +3,10 @@
 Contributors: lsvh  
 Donate link: https://github.com/LSVH/wp-user-classification  
 Tags: users, administration  
+Requires PHP: 7.0  
 Requires at least: 5.0  
-Requires PHP: 7.2.5  
-Tested up to: 5.7  
-Stable tag: 0.1.1  
+Tested up to: 5.7.2  
+Stable tag: %%VERSION%%  
 License: GPLv2 or later  
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -72,4 +72,6 @@ Your user might not have the right capabilities to edit the classifiers.
 
 Please submit issues or your contributions for this plugin on the [Github Repository](https://github.com/LSVH/wp-user-classification).
 
-<!-- changelog -->
+## Changelog
+
+%%CHANGELOG%%
