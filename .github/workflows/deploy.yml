@@ -3,6 +3,16 @@ on:
   release:
     types: [published]
 
+env:
+  CHANGELOG_TITLE: '### %%TITLE%%'
+  PLACEHOLDERS_INCLUDE: |
+    readme.md
+    index.php
+  README_NAME: readme.md
+  SLUG: ${{ secrets.WPORG_SLUG }}
+  SVN_USERNAME: ${{ secrets.WPORG_USERNAME }}
+  SVN_PASSWORD: ${{ secrets.WPORG_PASSWORD }}
+
 jobs:
   asset:
     name: Update Asset on WordPress.org
@@ -15,28 +25,18 @@ jobs:
         uses: LSVH/gha-releases-to-changelog@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          title-template: '### %%TITLE%%'
+          title-template: ${{ env.CHANGELOG_TITLE }}
 
       - name: Replace placeholders
         uses: LSVH/gha-replace-placeholders@v1
         with:
-          include: |
-            readme.md
-            index.php
+          include: ${{ env.PLACEHOLDERS_INCLUDE }}
           placeholders: |
             %%VERSION%%=${{ steps.generate.outputs.latest }}
             %%CHANGELOG%%=${{ steps.generate.outputs.changelog }}
 
-      - name: Prepare for deployment
-        uses: ./.github/actions/prepare-deploy
-
       - name: Update asset
         uses: 10up/action-wordpress-plugin-asset-update@1.4.1
-        env:
-          SLUG: ${{ secrets.WPORG_SLUG }}
-          SVN_USERNAME: ${{ secrets.WPORG_USERNAME }}
-          SVN_PASSWORD: ${{ secrets.WPORG_PASSWORD }}
-          README_NAME: readme.md
   plugin:
     name: Deploy Plugin to WordPress.org
     runs-on: ubuntu-latest
@@ -48,20 +48,15 @@ jobs:
         uses: LSVH/gha-releases-to-changelog@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          title-template: '### %%TITLE%%'
+          title-template: ${{ env.CHANGELOG_TITLE }}
 
       - name: Replace placeholders
         uses: LSVH/gha-replace-placeholders@v1
         with:
-          include: |
-            readme.md
-            index.php
+          include: ${{ env.PLACEHOLDERS_INCLUDE }}
           placeholders: |
             %%VERSION%%=${{ steps.generate.outputs.latest }}
             %%CHANGELOG%%=${{ steps.generate.outputs.changelog }}
-
-      - name: Prepare for deployment
-        uses: ./.github/actions/prepare-deploy
 
       - name: Get Composer cache directory
         id: composer-cache
@@ -81,8 +76,4 @@ jobs:
 
       - name: Deploy WordPress plugin
         uses: 10up/action-wordpress-plugin-deploy@stable
-        env:
-          SLUG: ${{ secrets.WPORG_SLUG }}
-          SVN_USERNAME: ${{ secrets.WPORG_USERNAME }}
-          SVN_PASSWORD: ${{ secrets.WPORG_PASSWORD }}
 
