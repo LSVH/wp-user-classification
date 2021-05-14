@@ -76,19 +76,23 @@ class UserCategory extends BaseComponent
     public function registerUserTableColumn($val, $column_name, $user_id)
     {
         if ($column_name === self::TAXONOMY) {
+            $default = '-';
             $meta = get_user_meta($user_id, $this->plugin->getDomain() . '_category', true);
 
             if (is_array($meta)) {
-                return implode(', ', array_filter(array_map(function ($args) {
+                $categories = array_filter(array_map(function ($args) {
                     $term = get_term(intval($args));
 
-                    return property_exists($term, 'name') ? $this->getFilterTermLink($term) : false;
-                }, $meta)));
+                    return is_object($term) && property_exists($term, 'name')
+                        ? $this->getFilterTermLink($term) : false;
+                }, $meta));
+
+                return empty($categories) ? $default  : implode(', ', $categories);
             }
 
             $term = get_term(intval($meta));
 
-            return property_exists($term, 'name') ? $this->getFilterTermLink($term) : '-';
+            return property_exists($term, 'name') ? $this->getFilterTermLink($term) : $default;
         }
 
         return $val;
