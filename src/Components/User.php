@@ -87,7 +87,7 @@ class User extends BaseComponent
         $allMeta = get_user_meta($user_id);
 
         $meta = array_filter($allMeta, function ($key) use ($domain) {
-            return str_starts_with($key, $domain);
+            return preg_match("/^$domain/", $key);
         }, ARRAY_FILTER_USE_KEY);
 
         foreach ($meta as $key => $value) {
